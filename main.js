@@ -23,12 +23,12 @@ browserWillBeOpenedPromise.then(function(browser){
 })
 .then(function(){
     console.log("inside login screen");
-    let emailWillBeTypedPromise = cTab.type("#input-1",email,{delay:100});
+    let emailWillBeTypedPromise = cTab.type("#input-1",email);
     return emailWillBeTypedPromise;
 })
 .then(function(){
     console.log("email was typed successfully");
-    let passwordWillBeTypedPromise = cTab.type("#input-2",password,{delay:100});
+    let passwordWillBeTypedPromise = cTab.type("#input-2",password);
     return passwordWillBeTypedPromise;
 })
 .then(function(){
@@ -145,6 +145,32 @@ function questionSolver(questionLink, idx){
         })
         .then(function(){
             console.log("answer copied from custom input box correctly");
+            let controlDownPromise = cTab.keyboard.up("Control");
+            return controlDownPromise;
+        })
+        .then(function(){
+            let editorWillBeClickedPromise = cTab.click('.monaco-editor.no-user-select');
+            return editorWillBeClickedPromise;
+        })
+        .then(function(){
+            console.log("editor clicked");
+            let controlWillBePressedPromise = cTab.keyboard.down("Control");
+            return controlWillBePressedPromise;
+        })
+        .then(function(){
+            let aPressedPromise = cTab.keyboard.press("a");
+            return aPressedPromise;
+        })
+        .then(function(){
+            let visPressedPromise = cTab.keyboard.press("v");
+            return visPressedPromise;
+        })
+        .then(function(){
+            let controlDownPromise = cTab.keyboard.up("Control");
+            return controlDownPromise;
+        })
+        .then(function(){
+            console.log("answer pasted in editor successfully");
         })
         .catch(function(err){
             reject(err);
