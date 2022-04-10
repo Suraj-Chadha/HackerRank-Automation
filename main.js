@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 const url = "https://www.hackerrank.com/auth/login";
 const {email,password} = require("./secrets");
 let cTab;
+let{answer} = require("./codes");
 let browserWillBeOpenedPromise = puppeteer.launch({
     headless:false,
     defaultViewport: null,
@@ -62,7 +63,7 @@ browserWillBeOpenedPromise.then(function(browser){
 })
 .then(function(linkArr){
     console.log(linkArr);
-    let questionWillBeSolved = questionSolver(linkArr[0]);
+    let questionWillBeSolved = questionSolver(linkArr[0],0);
     return questionWillBeSolved;
 })
 .then(function(){
@@ -92,7 +93,7 @@ return waitAndClickPromise;
 
 }
 
-function questionSolver(questionLink){
+function questionSolver(questionLink, idx){
     return new Promise(function(resolve, reject){
         let fullLink = `https://hackerrank.com${questionLink}`;
         let questionWillBeOpenedPromise = cTab.goto(fullLink);
@@ -105,7 +106,7 @@ function questionSolver(questionLink){
         })
         .then(function(){
             console.log("now we have to select the preffered language");
-            let prefferedLanguageWillBeTypedPromise = cTab.type('input[role="combobox"]','java 8');
+            let prefferedLanguageWillBeTypedPromise = cTab.type('input[role="combobox"]','java 8',{delay:100});
             return prefferedLanguageWillBeTypedPromise;
 
         })
@@ -116,6 +117,34 @@ function questionSolver(questionLink){
         })
         .then(function(){
             console.log("language java8 selected");
+            let customInputBoxWillBeClickedPromise = cTab.click('.checkbox-input');
+            return customInputBoxWillBeClickedPromise;
+        })
+        .then(function(){
+            console.log("customBox Input Clicked");
+            let waitForCustomInputAreaPromise = cTab.waitForSelector('.text-area.custominput');
+            return waitForCustomInputAreaPromise;
+        })
+        .then(function(){
+            console.log("custom Text Area is available");
+            let answerWillBeTypedPromise = cTab.type('.text-area.custominput',answer[idx]);
+            return answerWillBeTypedPromise;
+        })
+        .then(function(){
+            console.log("answer typed successfully");
+            let controlKeyIsPressedPromise = cTab.keyboard.down('Control');
+            return controlKeyIsPressedPromise;
+        })
+        .then(function(){
+            let aKeyIsPressedPromise = cTab.keyboard.press('a');
+            return aKeyIsPressedPromise;
+        })
+        .then(function(){
+            let xkeyIsPressedPromise = cTab.keyboard.press('x');
+            return xkeyIsPressedPromise;
+        })
+        .then(function(){
+            console.log("answer copied from custom input box correctly");
         })
         .catch(function(err){
             reject(err);
