@@ -63,7 +63,12 @@ browserWillBeOpenedPromise.then(function(browser){
 })
 .then(function(linkArr){
     console.log(linkArr);
-    let questionWillBeSolved = questionSolver(linkArr[0],0);
+    let questionWillBeSolved = questionSolver(linkArr[1],0);
+    for(let i = 2; i < linkArr.length; i++){
+        questionWillBeSolved = questionWillBeSolved.then(function(){
+            return questionSolver(linkArr[i],i-1);
+        })
+    }
     return questionWillBeSolved;
 })
 .then(function(){
@@ -171,6 +176,18 @@ function questionSolver(questionLink, idx){
         })
         .then(function(){
             console.log("answer pasted in editor successfully");
+            let submitQuestionSuccessfullyPromise = cTab.click('.hr-monaco-submit');
+            // resolve();
+        })
+        .then(function(){
+            console.log("answer submitted successfuly");
+            // resolve();
+            let waitForSuccessMessagePromise = cTab.waitForSelector('.congrats-heading');
+            return waitForSuccessMessagePromise;
+        })
+        .then(function(){
+            console.log("test cases passed");
+            resolve();
         })
         .catch(function(err){
             reject(err);
